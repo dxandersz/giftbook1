@@ -1,4 +1,4 @@
 
 Rails.application.routes.draw do
-    root 'page#home'
+    root 'api/v1/giftboxes#index'
 end

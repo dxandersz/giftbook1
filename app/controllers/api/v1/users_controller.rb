@@ -1,4 +1,6 @@
-class Api::V1::UsersController < ApplicationController
+class Api::V1::UsersController < ApiController
+    before_action :require_login, except: [:create]
+
 
     def index
         @users = User.all
@@ -11,12 +13,14 @@ class Api::V1::UsersController < ApplicationController
     end
 
     def create
-        @user = User.new(user_params)
-         if @user.save
-            render json: @user
-        else
-            render error: { error: 'Unable to create user.' }, status: 400
-        end
+        user = User.create!(user_params)
+        render json: { token: user.auth_token }
+    end
+
+# Useless for now, but will have more value if/when we implement more advanced user profiles and customization
+    def profile
+        user = User.find_by!(auth_token: request.headers[:token])
+        render json: { user: { username: user.username } }
     end
 
     def update
@@ -38,7 +42,7 @@ class Api::V1::UsersController < ApplicationController
     private
 
     def user_params
-        params.require(:user).permit(:username, :password_digest, city_ids: [])
+        params.require(:user).permit(:username, :password_digest)
     end
 
     def find_user
