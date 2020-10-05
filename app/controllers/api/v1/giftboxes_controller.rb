@@ -12,6 +12,7 @@ class Api::V1::GiftboxesController < ApplicationController
             render json: giftbox.errors
         end
     end
+        
 
     def create
         giftbox = Giftbox.create!(giftbox_params)
@@ -30,7 +31,7 @@ class Api::V1::GiftboxesController < ApplicationController
     private
 
     def giftbox_params
-        params.permit(:title, :category, :organization, :description, book_ids: [], user_ids: [])
+        params.permit(:title, :category, :organization, :description)
     end
 
     def giftbox
